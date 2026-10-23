@@ -3,44 +3,78 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
   <title>Настройка профиля</title>
   <script src="https://telegram.org/js/telegram-web-app.js?64"></script>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
+  <div class="glow" aria-hidden="true"></div>
   <main>
-    <h1>Настройка профиля</h1>
-    <p class="note">Справочная информация, не медицинская рекомендация.</p>
+    <header class="hero">
+      <p class="eyebrow"><span aria-hidden="true">✦</span> Профиль за минуту</p>
+      <h1>Можно ли<br>мне <span class="mark">это?</span></h1>
+      <p class="lead">Расскажи о себе — и присылай фото состава. Каждый продукт оценю по шкале:</p>
+      <div class="scale" aria-hidden="true">
+        <span>🟢</span><span>🟡</span><span>🟠</span><span>🔴</span><span>⛔</span>
+      </div>
+      <p class="scale-legend" aria-hidden="true"><span>безвредно</span><span>очень вредно</span></p>
+    </header>
 
-    <section>
-      <label class="field-label" for="name">Как к тебе обращаться</label>
-      <input id="name" type="text" maxlength="40" autocomplete="given-name" placeholder="Имя">
+    <section class="step" id="step-name">
+      <div class="step-head">
+        <span class="step-num" aria-hidden="true">1</span>
+        <label class="step-title" for="name">Как к тебе обращаться</label>
+      </div>
+      <input id="name" type="text" maxlength="40" autocomplete="given-name" placeholder="Имя" enterkeyhint="done">
       <p id="name-error" class="error" hidden>Имя — от 1 до 40 символов.</p>
     </section>
 
-    <section>
-      <h2 class="field-label">Что учитывать</h2>
-      <div id="conditions" class="cards" role="radiogroup" aria-label="Состояние">
+    <section class="step" id="step-condition">
+      <div class="step-head">
+        <span class="step-num" aria-hidden="true">2</span>
+        <h2 class="step-title" id="conditions-title">Что учитывать</h2>
+      </div>
+      <p class="step-sub">Выбери одно. Сменить можно в любой момент.</p>
+      <nav id="chips" class="chips" aria-label="Разделы" hidden></nav>
+      <div id="conditions" class="groups" role="radiogroup" aria-labelledby="conditions-title">
         <p class="hint">Загружаю список…</p>
       </div>
     </section>
 
-    <section class="checks">
+    <section class="step" id="step-checks">
+      <div class="step-head">
+        <span class="step-num" aria-hidden="true">3</span>
+        <h2 class="step-title">И последнее</h2>
+      </div>
       <label class="check">
         <input id="adult" type="checkbox">
-        <span>Мне 18 лет или больше</span>
+        <span class="box" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <span class="check-text">Мне 18 лет или больше</span>
       </label>
       <label class="check">
         <input id="consent" type="checkbox">
-        <span>Согласен на обработку данных<br><small class="hint">Подробности — команда /privacy в боте</small></span>
+        <span class="box" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <span class="check-text">Согласен на обработку данных<small>Подробности — команда /privacy в боте</small></span>
       </label>
     </section>
 
-    <p class="hint final">Дальше пришли фото состава в чат 📷</p>
+    <p class="final">Дальше пришли фото состава в чат <span aria-hidden="true">📷</span></p>
+    <p class="note">Справочная информация, не медицинская рекомендация.</p>
+  </main>
 
+  <div class="dock" id="dock">
+    <button type="button" class="dock-status" id="dock-status">
+      <span class="dock-dot" aria-hidden="true"></span>
+      <span class="dock-text" aria-live="polite">
+        <b id="dock-title">Состояние не выбрано</b>
+        <small id="dock-sub"></small>
+      </span>
+      <span class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+    </button>
     <button id="save" type="button" class="save" disabled hidden>Сохранить</button>
     <p id="outside" class="error" hidden>Открой эту страницу кнопкой «⚙️ Настроить профиль» в боте.</p>
-  </main>
-  <script src="app.js?v=2"></script>
+  </div>
+  <script src="app.js?v=4"></script>
 </body>
 </html>
