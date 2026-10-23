@@ -3,8 +3,9 @@
 
   const NAME_MAX = 40;
   const tg = window.Telegram && window.Telegram.WebApp;
-  // initData is empty when the page is opened outside Telegram (e.g. in a browser).
-  const inTelegram = Boolean(tg && tg.initData);
+  // Not tg.initData: it is empty for apps opened from a keyboard button (our case).
+  // Outside Telegram the SDK still loads but reports platform "unknown".
+  const inTelegram = Boolean(tg && tg.platform && tg.platform !== "unknown");
   const mainButton = inTelegram && tg.MainButton ? tg.MainButton : null;
 
   const el = {
