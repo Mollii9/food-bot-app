@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Настройка профиля</title>
+  <script src="https://telegram.org/js/telegram-web-app.js?64"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Настройка профиля</h1>
+    <p class="note">Справочная информация, не медицинская рекомендация.</p>
+
+    <section>
+      <label class="field-label" for="name">Как к тебе обращаться</label>
+      <input id="name" type="text" maxlength="40" autocomplete="given-name" placeholder="Имя">
+      <p id="name-error" class="error" hidden>Имя — от 1 до 40 символов.</p>
+    </section>
+
+    <section>
+      <h2 class="field-label">Что учитывать</h2>
+      <div id="conditions" class="cards" role="radiogroup" aria-label="Состояние">
+        <p class="hint">Загружаю список…</p>
+      </div>
+    </section>
+
+    <section class="checks">
+      <label class="check">
+        <input id="adult" type="checkbox">
+        <span>Мне 18 лет или больше</span>
+      </label>
+      <label class="check">
+        <input id="consent" type="checkbox">
+        <span>Согласен на обработку данных<br><small class="hint">Подробности — команда /privacy в боте</small></span>
+      </label>
+    </section>
+
+    <p class="hint final">Дальше пришли фото состава в чат 📷</p>
+
+    <button id="save" type="button" class="save" disabled hidden>Сохранить</button>
+    <p id="outside" class="error" hidden>Открой эту страницу кнопкой «⚙️ Настроить профиль» в боте.</p>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
