@@ -2,6 +2,7 @@
   "use strict";
 
   const NAME_MAX = 40;
+  const MAX_SELECTED = 5; // the bot accepts 1–5 conditions
   const PALETTES = 8; // .p0 … .p7 in style.css, one per group in file order
   const BRAND_COLOR = "#7c3aed";
   const tg = window.Telegram && window.Telegram.WebApp;
@@ -25,6 +26,7 @@
     dockTitle: document.getElementById("dock-title"),
     dockSub: document.getElementById("dock-sub"),
     meter: document.getElementById("meter").children,
+    pickCount: document.getElementById("pick-count"),
     steps: {
       name: document.getElementById("step-name"),
       condition: document.getElementById("step-condition"),
@@ -32,9 +34,7 @@
     },
   };
 
-  let selectedCondition = null;
-  let selectedName = "";
-  let selectedPalette = null;
+  let selected = []; // [{id, name, palette}] in the order the user ticked them
   let nameTouched = false;
   let wasValid = false;
   let groups = []; // [{section, chip}]
@@ -56,7 +56,7 @@
     const name = cleanName(el.name.value);
     return {
       name: !(name.length >= 1 && name.length <= NAME_MAX),
-      condition: selectedCondition === null,
+      condition: selected.length === 0,
       adult: !el.adult.checked,
       consent: !el.consent.checked,
     };
@@ -74,13 +74,22 @@
     if (m.adult) left.push("отметь 18+");
     if (m.consent) left.push("дай согласие");
 
-    el.dockTitle.textContent = selectedName || "Состояние не выбрано";
+    const last = selected[selected.length - 1];
+    el.dockTitle.textContent = !last
+      ? "Ничего не выбрано"
+      : selected.length === 1 ? last.name : selected[0].name + " + ещё " + (selected.length - 1);
     el.dockSub.textContent = valid
       ? "Всё готово — жми «Сохранить»"
       : "Дальше: " + left[0];
     el.dock.classList.toggle("ready", valid);
-    for (let i = 0; i < PALETTES; i++) el.dock.classList.toggle("p" + i, selectedPalette === i);
-    el.dock.classList.toggle("pal", selectedPalette !== null);
+    const palette = last ? last.palette : null;
+    for (let i = 0; i < PALETTES; i++) el.dock.classList.toggle("p" + i, palette === i);
+    el.dock.classList.toggle("pal", palette !== null);
+    if (el.pickCount) {
+      el.pickCount.textContent = selected.length
+        ? "Выбрано: " + selected.length + " из " + MAX_SELECTED
+        : "Можно выбрать несколько — до " + MAX_SELECTED;
+    }
     const done = 4 - left.length;
     Array.from(el.meter).forEach((bar, i) => bar.classList.toggle("on", i < done));
 
@@ -118,11 +127,11 @@
   function submit() {
     if (!isValid()) return;
     const payload = {
-      v: 1,
+      v: 2,
       display_name: cleanName(el.name.value),
       adult: true,
       consent: true,
-      condition_id: selectedCondition,
+      condition_ids: selected.map((s) => s.id),
     };
     const data = JSON.stringify(payload);
     if (inTelegram) {
@@ -159,6 +168,26 @@
     return svg;
   }
 
+  // Drawn icons, one 24px stroke family, matched to the group by a word in its name.
+  const ICONS = [
+    ["Желуд", '<path d="M9 3v4c0 2-3 3-3 7a6 6 0 0 0 6 6c3.5 0 6-2.5 6-5.5 0-2.5-2-4-4-4s-3 1.5-5 1.5"/><path d="M15 3v3"/>'],
+    ["Непере", '<path d="M8 3h8v3l2 3v12H6V9l2-3z"/><path d="M6 13h12"/><path d="M8 6h8"/>'],
+    ["Серд", '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M8 11h2l1-2 2 4 1-2h2"/>'],
+    ["Обмен", '<path d="M12 3v2"/><path d="M5 7h14"/><path d="M7 7l-3 7a3 3 0 0 0 6 0z"/><path d="M17 7l-3 7a3 3 0 0 0 6 0z"/><path d="M9 21h6"/><path d="M12 7v14"/>'],
+    ["Почк", '<path d="M10 4c-3.5 0-6 3.5-6 8s2.5 8 6 8c2 0 2.5-1.5 2.5-3 0-1.2-1-2-1-5s1-3.8 1-5c0-1.5-.5-3-2.5-3z"/><path d="M14 9c3 0 6 1 6 3s-3 3-6 3"/>'],
+    ["Кож", '<path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/><path d="M9.5 15a2.5 2.5 0 0 0 2.5 2.5"/>'],
+    ["Голов", '<path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 6 1V5a2 2 0 0 0-3-1z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-6 1"/>'],
+    ["Кров", '<path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z"/><path d="M12 11v6"/><path d="M9 14h6"/>'],
+  ];
+  const DEFAULT_ICON = '<circle cx="12" cy="12" r="7"/>';
+
+  function iconSvg(name) {
+    const hit = ICONS.find(([word]) => name.indexOf(word) !== -1);
+    const span = document.createElement("span");
+    span.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + (hit ? hit[1] : DEFAULT_ICON) + "</svg>";
+    return span.firstChild;
+  }
+
   function splitGroup(title) {
     // "🫃 Желудок и кишечник" → icon "🫃", name "Желудок и кишечник"
     const space = title.indexOf(" ");
@@ -168,14 +197,21 @@
     return { icon: "•", name: title };
   }
 
-  function select(c, input, groupIndex) {
-    selectedCondition = c.id;
-    selectedName = c.name;
-    selectedPalette = groupIndex % PALETTES;
-    for (const card of el.conditions.querySelectorAll(".card")) {
-      card.classList.toggle("selected", card.contains(input));
+  function toggle(c, input, groupIndex) {
+    if (input.checked && selected.length >= MAX_SELECTED) {
+      input.checked = false; // limit reached: keep the answer short and precise
+      haptic("warning");
+      el.pickCount.classList.remove("shake");
+      void el.pickCount.offsetWidth;
+      el.pickCount.classList.add("shake");
+      clearTimeout(toggle.shakeTimer);
+      toggle.shakeTimer = setTimeout(() => el.pickCount.classList.remove("shake"), 1200);
+      return;
     }
-    groups.forEach((g, i) => g.chip.classList.toggle("has-choice", i === groupIndex));
+    if (input.checked) selected.push({ id: c.id, name: c.name, palette: groupIndex % PALETTES, group: groupIndex });
+    else selected = selected.filter((s) => s.id !== c.id);
+    input.closest(".card").classList.toggle("selected", input.checked);
+    groups.forEach((g, i) => g.chip.classList.toggle("has-choice", selected.some((s) => s.group === i)));
     haptic("select");
     refresh();
   }
@@ -192,7 +228,7 @@
     const icon = document.createElement("span");
     icon.className = "group-icon";
     icon.setAttribute("aria-hidden", "true");
-    icon.textContent = parts.icon;
+    icon.append(iconSvg(parts.name));
     const name = document.createElement("h3");
     name.className = "group-name";
     name.textContent = parts.name;
@@ -204,7 +240,7 @@
     const chip = document.createElement("button");
     chip.type = "button";
     chip.className = "chip pal p" + palette;
-    chip.textContent = title;
+    chip.append(iconSvg(parts.name), document.createTextNode(parts.name));
     chip.addEventListener("click", () => scrollToEl(section));
 
     const group = { section, chip, cards };
@@ -231,10 +267,10 @@
       label.className = "card";
 
       const input = document.createElement("input");
-      input.type = "radio";
+      input.type = "checkbox";
       input.name = "condition";
       input.value = c.id;
-      input.addEventListener("change", () => select(c, input, groupIndex));
+      input.addEventListener("change", () => toggle(c, input, groupIndex));
 
       const dot = document.createElement("span");
       dot.className = "dot";
@@ -297,6 +333,30 @@
     }
   }
 
+  // The hero label gets scanned once on open (and again on tap): the beam passes,
+  // ingredients take their verdict colours, the stamp lands.
+  function scanLabel() {
+    const label = document.getElementById("label");
+    if (!label) return;
+    label.classList.remove("scanning", "scanned");
+    if (reducedMotion) { label.classList.add("scanned"); return; }
+    void label.offsetWidth;
+    label.classList.add("scanning");
+    const words = Array.from(label.querySelectorAll(".w"));
+    const top = label.getBoundingClientRect().top;
+    const height = label.offsetHeight || 1;
+    words.forEach((w) => { w.style.transitionDelay = ""; });
+    setTimeout(() => {
+      words.forEach((w) => {
+        // colour each word when the beam reaches its line
+        const y = (w.getBoundingClientRect().top - top) / height;
+        w.style.transitionDelay = Math.round(y * 1100) + "ms";
+      });
+      label.classList.add("scanned");
+      haptic("select");
+    }, 250);
+  }
+
   function init() {
     if (tg) {
       tg.ready();
@@ -326,6 +386,9 @@
     }
     refresh();
     loadConditions();
+    const label = document.getElementById("label");
+    if (label) label.addEventListener("click", scanLabel);
+    setTimeout(scanLabel, 400);
   }
 
   init();

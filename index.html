@@ -6,19 +6,29 @@
   <meta name="color-scheme" content="light dark">
   <title>Настройка профиля</title>
   <script src="https://telegram.org/js/telegram-web-app.js?64"></script>
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="preload" href="fonts/unbounded-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
   <div class="glow" aria-hidden="true"></div>
   <main>
     <header class="hero">
-      <p class="eyebrow"><span aria-hidden="true">✦</span> Профиль за минуту</p>
       <h1>Можно ли<br>мне <span class="mark">это?</span></h1>
-      <p class="lead">Расскажи о себе — и присылай фото состава. Каждый продукт оценю по шкале:</p>
-      <div class="scale" aria-hidden="true">
-        <span>🟢</span><span>🟡</span><span>🟠</span><span>🔴</span><span>⛔</span>
-      </div>
-      <p class="scale-legend" aria-hidden="true"><span>безвредно</span><span>очень вредно</span></p>
+      <p class="lead">Отметь, что учитывать, и присылай фото состава. Каждый продукт оценю под тебя.</p>
+      <figure class="label" id="label" aria-hidden="true">
+        <div class="label-top"><b>СОСТАВ:</b><span class="barcode"></span></div>
+        <p class="label-text">
+          <span class="w v1">мука пшеничная</span>, <span class="w v3">сахар</span>, <span class="w v0">вода</span>,
+          <span class="w v2">масло пальмовое</span>, <span class="w v0">соль</span>, <span class="w v4">спирт</span>,
+          <span class="w v1">ароматизатор</span>, <span class="w v2">какао</span>, <span class="w v0">гречка</span>,
+          <span class="w v3">сироп глюкозный</span>, <span class="w v1">молоко сухое</span>.
+        </p>
+        <span class="beam"></span>
+        <span class="stamp"><i></i>Оценено</span>
+      </figure>
+      <ol class="scale" aria-label="Шкала оценок">
+        <li class="v0">безвредно</li><li class="v1">не страшно</li><li class="v2">пойдет</li><li class="v3">вредно</li><li class="v4">очень вредно</li>
+      </ol>
     </header>
 
     <section class="step" id="step-name">
@@ -35,9 +45,9 @@
         <span class="step-num" aria-hidden="true">2</span>
         <h2 class="step-title" id="conditions-title">Что учитывать</h2>
       </div>
-      <p class="step-sub">Выбери одно. Сменить можно в любой момент.</p>
+      <p class="step-sub"><span id="pick-count" class="pick-count">Можно выбрать несколько — до 5</span>. Сменить можно в любой момент.</p>
       <nav id="chips" class="chips" aria-label="Разделы" hidden></nav>
-      <div id="conditions" class="groups" role="radiogroup" aria-labelledby="conditions-title">
+      <div id="conditions" class="groups" role="group" aria-labelledby="conditions-title">
         <p class="hint">Загружаю список…</p>
       </div>
     </section>
@@ -59,7 +69,7 @@
       </label>
     </section>
 
-    <p class="final">Дальше пришли фото состава в чат <span aria-hidden="true">📷</span></p>
+    <p class="final">Дальше пришли фото состава в чат</p>
     <p class="note">Справочная информация, не медицинская рекомендация.</p>
   </main>
 
@@ -75,6 +85,6 @@
     <button id="save" type="button" class="save" disabled hidden>Сохранить</button>
     <p id="outside" class="error" hidden>Открой эту страницу кнопкой «⚙️ Настроить профиль» в боте.</p>
   </div>
-  <script src="app.js?v=4"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

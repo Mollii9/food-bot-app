@@ -8,10 +8,14 @@
   --danger: var(--tg-theme-destructive-text-color, #d92d20);
   --line: rgba(20, 20, 40, .08);
   --shadow: 0 10px 30px -14px rgba(30, 20, 60, .35);
-  --brand1: #e11d48;
-  --brand2: #7c3aed;
-  --brand: linear-gradient(120deg, var(--brand1), var(--brand2));
-  --done: linear-gradient(135deg, #15803d, #047857);
+  /* One accent (tomato, the colour of a sale sticker) + the five verdict colours as the system. */
+  --brand1: #e8461e;
+  --brand2: #c2370f;
+  --brand: var(--brand1);
+  --done: #15803d;
+  --v0: #16a34a; --v1: #eab308; --v2: #f97316; --v3: #ef4444; --v4: #7f1d1d;
+  --paper: #fbf6ec;
+  --ink: #1d1a16;
   --mark-opacity: .38;
   --tint: 9%;
   --radius: 20px;
@@ -78,7 +82,7 @@ body {
   min-height: 100vh;
   background: var(--page);
   color: var(--text);
-  font: 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  font: 500 16px/1.45 "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
 }
 
@@ -89,9 +93,9 @@ body {
   height: 360px;
   pointer-events: none;
   background:
-    radial-gradient(60% 70% at 12% 10%, rgba(249, 115, 22, .30), transparent 70%),
-    radial-gradient(55% 65% at 90% 0%, rgba(124, 58, 237, .30), transparent 70%),
-    radial-gradient(50% 60% at 60% 70%, rgba(225, 29, 72, .18), transparent 70%);
+    radial-gradient(60% 70% at 12% 10%, rgba(232, 70, 30, .26), transparent 70%),
+    radial-gradient(55% 65% at 92% 0%, rgba(234, 179, 8, .24), transparent 70%),
+    radial-gradient(50% 60% at 60% 75%, rgba(22, 163, 74, .14), transparent 70%);
 }
 
 main {
@@ -103,25 +107,6 @@ main {
 
 /* ── Hero ── */
 .hero { padding: 8px 4px 22px; }
-.eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0 0 14px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--card);
-  box-shadow: var(--shadow);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .02em;
-}
-.eyebrow span {
-  background: var(--brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
 h1 {
   margin: 0;
   font-size: clamp(38px, 11.5vw, 54px);
@@ -156,7 +141,7 @@ h1 {
   font-size: 18px;
   background: var(--card);
   box-shadow: inset 0 -4px 0 var(--c), var(--shadow);
-  animation: rise .5s cubic-bezier(.2, .9, .3, 1.3) both;
+  animation: rise .5s cubic-bezier(.16, 1, .3, 1) both;
 }
 .scale span:nth-child(1) { --c: #22c55e; animation-delay: .05s; }
 .scale span:nth-child(2) { --c: #facc15; animation-delay: .1s; }
@@ -192,7 +177,7 @@ h1 {
   color: #fff;
   font-weight: 800;
   font-size: 16px;
-  transition: transform .3s cubic-bezier(.2, .9, .3, 1.4);
+  transition: transform .3s cubic-bezier(.16, 1, .3, 1);
 }
 .step.done .step-num { background: var(--done); font-size: 0; transform: rotate(-8deg); }
 .step.done .step-num::before { content: "✓"; font-size: 18px; }
@@ -215,8 +200,8 @@ input[type="text"] {
 }
 input[type="text"]::placeholder { color: var(--muted); font-weight: 500; }
 input[type="text"]:focus {
-  border-color: var(--brand2);
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, .18);
+  border-color: var(--brand1);
+  box-shadow: 0 0 0 4px rgba(232, 70, 30, .18);
 }
 
 /* ── Group chips (sticky inside step 2) ── */
@@ -320,10 +305,10 @@ input[type="text"]:focus {
 .card .dot svg { width: 16px; height: 16px; opacity: 0; transform: scale(.3); }
 .card .dot path { fill: none; stroke: var(--g1); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
 
-.card.selected { color: #fff; box-shadow: 0 12px 26px -12px var(--g1); animation: pop .35s cubic-bezier(.2, .9, .3, 1.4); }
+.card.selected { color: #fff; box-shadow: 0 12px 26px -12px var(--g1); animation: pop .35s cubic-bezier(.16, 1, .3, 1); }
 .card.selected::before { opacity: 1; }
 .card.selected .dot { background: #fff; border-color: #fff; }
-.card.selected .dot svg { opacity: 1; transform: none; transition: transform .3s cubic-bezier(.2, .9, .3, 1.6), opacity .15s; }
+.card.selected .dot svg { opacity: 1; transform: none; transition: transform .3s cubic-bezier(.16, 1, .3, 1), opacity .15s; }
 .card:has(input:focus-visible) { outline: 3px solid var(--ring); outline-offset: 2px; }
 
 /* ── Checkboxes ── */
@@ -352,7 +337,7 @@ input[type="text"]:focus {
   height: 28px;
   border: 2.5px solid var(--muted);
   border-radius: 9px;
-  transition: background .2s, border-color .2s, transform .3s cubic-bezier(.2, .9, .3, 1.5);
+  transition: background .2s, border-color .2s, transform .3s cubic-bezier(.16, 1, .3, 1);
 }
 .check .box svg { width: 18px; height: 18px; }
 .check .box path {
@@ -367,7 +352,7 @@ input[type="text"]:focus {
 }
 .check input:checked + .box { background: var(--brand); border-color: transparent; transform: rotate(-6deg) scale(1.06); }
 .check input:checked + .box path { stroke-dashoffset: 0; }
-.check input:focus-visible + .box { outline: 3px solid var(--brand2); outline-offset: 2px; }
+.check input:focus-visible + .box { outline: 3px solid var(--brand1); outline-offset: 2px; }
 .check-text { padding-top: 2px; }
 .check-text small { display: block; margin-top: 2px; color: var(--muted); font-size: 14px; font-weight: 500; }
 
@@ -405,9 +390,9 @@ input[type="text"]:focus {
   text-align: left;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  animation: slide-up .45s .2s cubic-bezier(.2, .9, .3, 1.2) both;
+  animation: slide-up .45s .2s cubic-bezier(.16, 1, .3, 1) both;
 }
-.dock-status:focus-visible { outline: 3px solid var(--brand2); outline-offset: 2px; }
+.dock-status:focus-visible { outline: 3px solid var(--brand1); outline-offset: 2px; }
 .dock-dot {
   flex: none;
   width: 14px;
@@ -428,9 +413,9 @@ input[type="text"]:focus {
   height: 22px;
   border-radius: 4px;
   background: var(--line);
-  transition: background .25s, transform .3s cubic-bezier(.2, .9, .3, 1.6);
+  transition: background .25s, transform .3s cubic-bezier(.16, 1, .3, 1);
 }
-.meter i.on { background: var(--brand); transform: scaleY(1.12); }
+.meter i.on { background: var(--brand1); transform: scaleY(1.12); }
 .dock.ready .meter i { background: var(--done); }
 .dock.bump .dock-status { animation: bump .4s ease; }
 
@@ -446,7 +431,7 @@ input[type="text"]:focus {
   font-size: 17px;
   font-weight: 750;
   cursor: pointer;
-  box-shadow: 0 12px 26px -12px var(--brand2);
+  box-shadow: 0 12px 26px -12px var(--brand1);
 }
 .save:disabled { background: var(--card); color: var(--muted); border: 1px solid var(--line); box-shadow: none; cursor: default; }
 .no-tg { --dock-h: 140px; }
@@ -465,3 +450,150 @@ input[type="text"]:focus {
     scroll-behavior: auto !important;
   }
 }
+
+/* Multi-select counter: bold, shakes when the limit is hit. */
+.pick-count { font-weight: 700; color: var(--text); }
+.pick-count.shake { animation: shake .4s; color: var(--danger); }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.pick-count { display: inline-block; }
+@media (prefers-reduced-motion: reduce) { .pick-count.shake { animation: none; } }
+
+
+/* ── Type: Unbounded for the voice, Manrope for reading (self-hosted, OFL) ── */
+@font-face { font-family: "Unbounded"; src: url(fonts/unbounded-cyrillic.woff2) format("woff2"); font-weight: 600 800; font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Unbounded"; src: url(fonts/unbounded-latin.woff2) format("woff2"); font-weight: 600 800; font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Manrope"; src: url(fonts/manrope-cyrillic.woff2) format("woff2"); font-weight: 500 800; font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Manrope"; src: url(fonts/manrope-latin.woff2) format("woff2"); font-weight: 500 800; font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+h1, .step-title, .group-name, .label-top b, .stamp { font-family: "Unbounded", "Manrope", sans-serif; }
+h1 { font-weight: 800; font-size: clamp(36px, 10.5vw, 52px); letter-spacing: -.03em; line-height: 1.04; }
+.step-title { font-weight: 700; font-size: 19px; letter-spacing: -.01em; }
+.group-name { font-weight: 700; font-size: 16px; }
+
+/* The underline under «это?» is the verdict scale itself. */
+.mark::after { background: linear-gradient(90deg, var(--v0), var(--v1), var(--v2), var(--v3)); opacity: .7; }
+
+/* ── Hero artwork: a pack label, scanned. The one authored moment of the page. ── */
+.label {
+  position: relative;
+  margin: 18px 0 14px;
+  padding: 16px 16px 18px;
+  border-radius: 22px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 18px 40px -22px rgba(60, 30, 10, .55), inset 0 0 0 1px rgba(60, 40, 20, .08);
+  overflow: hidden;
+  transform: rotate(-1.2deg);
+  cursor: pointer;
+}
+.label::before {
+  /* torn-paper zigzag along the top edge */
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 8px;
+  background: radial-gradient(circle at 6px 0, var(--page) 5px, transparent 5.5px) 0 0 / 12px 8px repeat-x;
+}
+.label-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.label-top b { font-size: 15px; letter-spacing: .06em; }
+.barcode {
+  width: 64px;
+  height: 22px;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 13px);
+  opacity: .8;
+}
+.label-text { margin: 0; font-size: 15px; line-height: 1.75; font-weight: 600; color: #4a443c; }
+.w { border-radius: 6px; padding: 1px 3px; margin: 0 -3px; transition: background .35s ease, color .35s ease, box-shadow .35s ease; }
+.label.scanned .w { color: #fff; }
+.label.scanned .w.v0 { background: var(--v0); }
+.label.scanned .w.v1 { background: #ca8a04; }
+.label.scanned .w.v2 { background: #ea580c; }
+.label.scanned .w.v3 { background: var(--v3); }
+.label.scanned .w.v4 { background: var(--v4); }
+.beam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -30%;
+  height: 26%;
+  background: linear-gradient(180deg, transparent, rgba(232, 70, 30, .16) 70%, rgba(232, 70, 30, .9) 96%, transparent);
+  filter: blur(.3px);
+  opacity: 0;
+  pointer-events: none;
+}
+.label.scanning .beam { animation: sweep 1.6s cubic-bezier(.45, .05, .25, 1) both; }
+.stamp {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 2.5px solid var(--done);
+  border-radius: 10px;
+  color: var(--done);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--paper) 85%, transparent);
+  transform: rotate(-8deg) scale(1.6);
+  opacity: 0;
+}
+.stamp i { width: 9px; height: 9px; border-radius: 50%; background: var(--done); }
+.label.scanned .stamp { animation: stamp .45s .15s cubic-bezier(.16, 1, .3, 1) forwards; }
+@keyframes sweep { 0% { top: -30%; opacity: 1; } 90% { opacity: 1; } 100% { top: 105%; opacity: 0; } }
+@keyframes stamp { to { opacity: 1; transform: rotate(-8deg) scale(1); } }
+
+/* The scale: five drawn chips, not emoji. */
+.scale { list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 0; padding: 0; }
+.scale li {
+  position: relative;
+  padding: 26px 2px 8px;
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--text);
+}
+.scale li::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent);
+}
+.scale .v0 { --c: var(--v0); } .scale .v1 { --c: var(--v1); } .scale .v2 { --c: var(--v2); }
+.scale .v3 { --c: var(--v3); } .scale .v4 { --c: var(--v4); }
+
+/* Drawn group icons (one stroke family) replace emoji. */
+.group-icon svg, .chip svg { fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.group-icon { color: #fff; font-size: 0; }
+.group-icon svg { width: 24px; height: 24px; }
+.chip svg { width: 18px; height: 18px; flex: none; }
+
+/* Browser surfaces carry the palette too. */
+::selection { background: rgba(232, 70, 30, .25); }
+input { caret-color: var(--brand1); }
+.step-num { box-shadow: 0 6px 14px -6px var(--brand1); }
+
+@media (prefers-reduced-motion: reduce) { .label { transform: none; } }
+/* The darkest verdict dot needs more light on dark cards. */
+:root[data-scheme="dark"] .scale .v4 { --c: #c0392b; }
+@media (prefers-color-scheme: dark) { :root:not([data-scheme="light"]) .scale .v4 { --c: #c0392b; } }
